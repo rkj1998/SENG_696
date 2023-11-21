@@ -5,67 +5,109 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
-
 public class AccessUI extends UI implements ActionListener {
 
-    JLabel descriptionTextField = new JLabel("Please login or register.");
+    private JLabel titleLabel = createStyledLabel("Multi-Agent System for Healthcare Appointment Scheduling", 18, Font.BOLD);
+    private JLabel projectLabel = createStyledLabel("Final Project", 16, Font.BOLD);
+    private JLabel courseLabel = createStyledLabel("Agent-based Software Engineering (SENG696)", 14, Font.PLAIN);
+    private JLabel groupLabel = createStyledLabel("Group 5", 14, Font.PLAIN);
+    private JLabel membersLabel = createStyledLabel("Rahul Jha, Narges Babadi", 14, Font.PLAIN);
 
-    JButton button1 = new JButton("Login");
-    JButton button2 = new JButton("Register");
-    JPanel panel1 = new JPanel();
-
-    JPanel panel2 = new JPanel();
+    private JLabel descriptionTextField = createStyledLabel("Welcome to the Specialist Platform", 16, Font.PLAIN);
+    private JButton loginButton = createStyledButton("Login", 14);
+    private JButton registerButton = createStyledButton("Register", 14);
 
     private static AccessUI singleton = null;
 
-
     private AccessUI(String frameTitle) {
         super(frameTitle);
-        panel1.setPreferredSize(new Dimension(250, 250));
-        panel2.setPreferredSize(new Dimension(250, 250));
-        button1.addActionListener(this);
-        button2.addActionListener(this);
-        this.panel1.add(descriptionTextField);
-        this.panel1.add(button1);
-        this.panel1.add(button2);
-
-        this.frame.add(panel1);
-        this.frame.add(panel2);
-        this.frame.pack();
+        initUI();
     }
-    public static AccessUI createUI()
-    {
-        if (singleton == null)
-        {
-            singleton = new AccessUI("Specialist Platform");
 
+    public static AccessUI createUI() {
+        if (singleton == null) {
+            singleton = new AccessUI("Specialist Platform");
         }
         return singleton;
+    }
 
+    private void initUI() {
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setPreferredSize(new Dimension(500, 300));
+
+        JPanel headerPanel = new JPanel(new GridLayout(5, 1));
+        headerPanel.add(titleLabel);
+        headerPanel.add(projectLabel);
+        headerPanel.add(courseLabel);
+        headerPanel.add(groupLabel);
+        headerPanel.add(membersLabel);
+
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 10));
+        loginButton.addActionListener(this);
+        registerButton.addActionListener(this);
+
+        buttonPanel.add(loginButton);
+        buttonPanel.add(registerButton);
+
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
+        mainPanel.add(descriptionTextField, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        this.frame.add(mainPanel);
+        this.frame.pack();
+        this.frame.setLocationRelativeTo(null); // Center the frame on the screen
+        fadeIn();
+    }
+
+    private JLabel createStyledLabel(String text, int fontSize, int fontStyle) {
+        JLabel label = new JLabel(text);
+        label.setFont(new Font(Font.SANS_SERIF, fontStyle, fontSize));
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        return label;
+    }
+
+    private JButton createStyledButton(String text, int fontSize) {
+        JButton button = new JButton(text);
+        button.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, fontSize));
+        return button;
+    }
+
+    private void fadeIn() {
+        Timer timer = new Timer(20, new ActionListener() {
+            private float alpha = 0f;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                alpha += 0.05f;
+                if (alpha >= 1f) {
+                    alpha = 1f;
+                    ((Timer) e.getSource()).stop();
+                }
+                frame.setOpacity(alpha);
+            }
+        });
+        timer.start();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == this.button1)
-        {
-            //open window for login!
+        if (e.getSource() == this.loginButton) {
+            // open window for login
             this.disposeFrame();
             LoginUI myLoginWindow = LoginUI.createUI();
             myLoginWindow.show();
-        }
-        else if(e.getSource() == this.button2)
-        {
-            //open window for register!
+        } else if (e.getSource() == this.registerButton) {
+            // open window for register
             this.disposeFrame();
-            RegisterUI myLoginWindow = RegisterUI.createUI();
-            myLoginWindow.show();
+            RegisterUI myRegisterWindow = RegisterUI.createUI();
+            myRegisterWindow.show();
         }
-
     }
 
-
-
-
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            AccessUI accessUI = AccessUI.createUI();
+            accessUI.show();
+        });
+    }
 }
-
