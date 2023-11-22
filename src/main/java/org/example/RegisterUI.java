@@ -8,129 +8,141 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RegisterUI extends UI implements ActionListener {
-    JTextField emailTextField = new JTextField(20);
-    JTextField passwordTextField = new JTextField(20);
-    JTextField nameTextField = new JTextField(20);
-    JTextField phoneTextField = new JTextField(20);
-    JButton button = new JButton("Submit");
-    JPanel panel = new JPanel();
+    private JTextField emailTextField = new JTextField(20);
+    private JPasswordField passwordField = new JPasswordField(20);
+    private JTextField nameTextField = new JTextField(20);
+    private JTextField phoneTextField = new JTextField(20);
+    private JButton submitButton = new JButton("Submit");
+
     private static RegisterUI singleton = null;
 
-    private RegisterUI(String frameTitle)
-    {
+    private RegisterUI(String frameTitle) {
         super(frameTitle);
-        panel.setPreferredSize(new Dimension(250, 250));
-        emailTextField.setPreferredSize(new Dimension(250, 40));
-        emailTextField.setText("Email");
-        passwordTextField.setText("Password");
-        nameTextField.setText("Name");
-        phoneTextField.setText("phone");
-        phoneTextField.setPreferredSize(new Dimension(250, 40));
-        passwordTextField.setPreferredSize(new Dimension(250, 40));
-        nameTextField.setPreferredSize(new Dimension(250, 40));
-        button.addActionListener(this);
-        panel.add(nameTextField);
-        panel.add(emailTextField);
-        panel.add(passwordTextField);
-        panel.add(phoneTextField);
-        panel.setLayout(new FlowLayout());
-        panel.add(button);
 
-        frame.setLayout(new FlowLayout());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(500, 600));
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        panel.setPreferredSize(new Dimension(300, 250));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(createLabel("Name:"), gbc);
+
+        gbc.gridy++;
+        panel.add(nameTextField, gbc);
+
+        gbc.gridy++;
+        panel.add(createLabel("Email:"), gbc);
+
+        gbc.gridy++;
+        panel.add(emailTextField, gbc);
+
+        gbc.gridy++;
+        panel.add(createLabel("Password:"), gbc);
+
+        gbc.gridy++;
+        panel.add(passwordField, gbc);
+
+        gbc.gridy++;
+        panel.add(createLabel("Phone:"), gbc);
+
+        gbc.gridy++;
+        panel.add(phoneTextField, gbc);
+
+        gbc.gridy++;
+        panel.add(submitButton, gbc);
+
+        submitButton.addActionListener(this);
+
         frame.add(panel);
         frame.pack();
-
+        frame.setLocationRelativeTo(null);
     }
 
+    private JLabel createLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setHorizontalAlignment(SwingConstants.LEFT);
+        label.setPreferredSize(new Dimension(80, 20));
+        return label;
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == button)
-        {
-
+        if (e.getSource() == submitButton) {
             String email = emailTextField.getText();
             String name = nameTextField.getText();
-            String password = passwordTextField.getText();
+            String password = new String(passwordField.getPassword());
             String phone = phoneTextField.getText();
 
-            // regex from https://stackoverflow.com/questions/624581/what-is-the-best-java-email-address-validation-method
+            // Validation logic
             Pattern emailPattern = Pattern.compile("^.+@.+\\..+$");
             Matcher emailMatcher = emailPattern.matcher(email);
-            boolean emailDoesItMatch = emailMatcher.matches();
+            boolean emailIsValid = emailMatcher.matches();
 
             Pattern phonePattern = Pattern.compile("^\\d{10}$");
             Matcher phoneMatcher = phonePattern.matcher(phone);
-            boolean phoneDoesItMatch = phoneMatcher.matches();
+            boolean phoneIsValid = phoneMatcher.matches();
 
-            if (name.length() < 3 || name.length() > 10)
-            {
-                this.showFailureName();
+            if (name.length() < 3 || name.length() > 10) {
+                showFailureName();
                 return;
             }
-            if (!emailDoesItMatch)
-            {
-                this.showFailureEmail();
+            if (!emailIsValid) {
+                showFailureEmail();
                 return;
             }
-            if (password.length() < 3 || password.length() > 10)
-            {
-                this.showFailurePassword();
+            if (password.length() < 3 || password.length() > 10) {
+                showFailurePassword();
                 return;
             }
-            if (!phoneDoesItMatch)
-            {
-                this.showFailurePhone();
+            if (!phoneIsValid) {
+                showFailurePhone();
                 return;
             }
 
-
-            PortalGUI.returnSingleton().requestRegister(name,email,phone,password);
-
+            // If all validations pass, proceed with registration
+            PortalGUI.returnSingleton().requestRegister(name, email, phone, password);
+            showSuccessRegister();
         }
-
     }
-    public static RegisterUI createUI()
-    {
-        if (singleton == null)
-        {
-            singleton = new RegisterUI("Register");
 
+
+    public void showFailureName() {
+        JOptionPane.showMessageDialog(null, "Registration failed because name is invalid", "Alert", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void showFailureEmail() {
+        JOptionPane.showMessageDialog(null, "Registration failed because email is invalid", "Alert", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void showFailurePassword() {
+        JOptionPane.showMessageDialog(null, "Registration failed because password is invalid", "Alert", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void showFailurePhone() {
+        JOptionPane.showMessageDialog(null, "Registration failed because phone number is invalid", "Alert", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static RegisterUI createUI() {
+        if (singleton == null) {
+            singleton = new RegisterUI("Register");
         }
         return singleton;
-
     }
 
-
-    public void showFailureEmail()
-    {
-        JOptionPane.showMessageDialog(null, "Register failed because email is invalid", "alert", JOptionPane.ERROR_MESSAGE);
-
-    }
-    public void showFailurePassword()
-    {
-        JOptionPane.showMessageDialog(null, "Register failed because password is too short (<3) or too long(>10)", "alert", JOptionPane.ERROR_MESSAGE);
-
-    }
-    public void showFailureMessage()
-    {
-        JOptionPane.showMessageDialog(null, "Register failed", "alert", JOptionPane.ERROR_MESSAGE);
-
+    public void showFailureMessage() {
+        JOptionPane.showMessageDialog(null, "Registration failed", "Alert", JOptionPane.ERROR_MESSAGE);
     }
 
-    public void showSuccessRegister()
-    {
-        JOptionPane.showMessageDialog(null, "Register successful! please login.", "Success!", JOptionPane.INFORMATION_MESSAGE);
-
+    // Missing method added
+    public void showSuccessRegister() {
+        JOptionPane.showMessageDialog(null, "Registration successful! Please log in.", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
-    public void showFailureName()
-    {
-        JOptionPane.showMessageDialog(null, "Register failed because name is too short (<3) or too long(>10)", "alert", JOptionPane.ERROR_MESSAGE);
 
-    }
-    public void showFailurePhone()
-    {
-        JOptionPane.showMessageDialog(null, "Phone number is invalid, should be 10 digits.", "alert", JOptionPane.ERROR_MESSAGE);
-
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            RegisterUI registerUI = RegisterUI.createUI();
+            registerUI.show();
+        });
     }
 }

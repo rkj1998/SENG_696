@@ -56,7 +56,6 @@ public class AccessUI extends UI implements ActionListener {
         this.frame.add(mainPanel);
         this.frame.pack();
         this.frame.setLocationRelativeTo(null); // Center the frame on the screen
-        fadeIn();
     }
 
     private JLabel createStyledLabel(String text, int fontSize, int fontStyle) {
@@ -70,23 +69,6 @@ public class AccessUI extends UI implements ActionListener {
         JButton button = new JButton(text);
         button.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, fontSize));
         return button;
-    }
-
-    private void fadeIn() {
-        Timer timer = new Timer(20, new ActionListener() {
-            private float alpha = 0f;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                alpha += 0.05f;
-                if (alpha >= 1f) {
-                    alpha = 1f;
-                    ((Timer) e.getSource()).stop();
-                }
-                frame.setOpacity(alpha);
-            }
-        });
-        timer.start();
     }
 
     @Override
