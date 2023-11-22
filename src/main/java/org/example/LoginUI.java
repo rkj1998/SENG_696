@@ -7,53 +7,69 @@ import java.awt.event.ActionListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+
 public class LoginUI extends UI implements ActionListener {
-//    JFrame frame = new JFrame("Specialist platform, Login");
-    JTextField emailTextField = new JTextField(20);
-    JTextField passwordTextField = new JTextField(20);
-    JButton button = new JButton("Submit");
-    JPanel panel = new JPanel();
+
+
+    private JTextField emailTextField = new JTextField(20);
+    private JPasswordField passwordField = new JPasswordField(20);
+    private JButton submitButton = new JButton("Submit");
+
     private static LoginUI singleton = null;
-
-
 
     private LoginUI(String frameTitle) {
         super(frameTitle);
-        panel.setPreferredSize(new Dimension(250, 250));
-        emailTextField.setPreferredSize(new Dimension(250, 40));
-        emailTextField.setText("Email");
-        passwordTextField.setText("Password");
-        passwordTextField.setPreferredSize(new Dimension(250, 40));
-        button.addActionListener(this);
-        panel.add(emailTextField);
-        panel.add(passwordTextField);
-        panel.setLayout(new FlowLayout());
-        panel.add(button);
-        frame.setLayout(new FlowLayout());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(500, 600));
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        panel.add(createLabel("Email:"), gbc);
+
+        gbc.gridy++;
+        panel.add(emailTextField, gbc);
+
+        gbc.gridy++;
+        panel.add(createLabel("Password:"), gbc);
+
+        gbc.gridy++;
+        panel.add(passwordField, gbc);
+
+        gbc.gridy++;
+        gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(submitButton, gbc);
+
+        submitButton.addActionListener(this);
+
         frame.add(panel);
         frame.pack();
-
+        frame.setLocationRelativeTo(null);
     }
 
-    public static LoginUI createUI()
-    {
-        if (singleton == null)
-        {
-            singleton = new LoginUI("login");
+    private JLabel createLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setPreferredSize(new Dimension(80, 20));
+        return label;
+    }
 
+    public static LoginUI createUI() {
+        if (singleton == null) {
+            singleton = new LoginUI("Login");
         }
         return singleton;
-
     }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == button)
+        if (e.getSource() == submitButton)
         {
             String email = emailTextField.getText();
-            String password = passwordTextField.getText();
+            String password = new String(passwordField.getPassword());
 
 //            System.out.println(passwordTextField.getText());
             // regex from https://stackoverflow.com/questions/624581/what-is-the-best-java-email-address-validation-method
