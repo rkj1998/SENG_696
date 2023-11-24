@@ -8,19 +8,24 @@ import java.awt.event.ActionListener;
 public class HomeUI extends UI implements ActionListener  {
     JLabel welcomeTextLabel = new JLabel();
     JButton pastAPPButton = new JButton("Past Appointments");
-    JButton specialistButton = new JButton("Specialists List");
+    JComboBox<String> specializationDropdown = new JComboBox<>();
+    JButton showSpecialistsButton = new JButton("Show Specialists");
     private static HomeUI singleton = null;
     JPanel panel = new JPanel();
 
     private HomeUI(String frameTitle) {
+
         super(frameTitle);
         panel.setPreferredSize(new Dimension(250, 250));
         pastAPPButton.addActionListener(this);
-        specialistButton.addActionListener(this);
+        // Add the specialization dropdown
+        panel.add(specializationDropdown);
+        // Add a button to trigger displaying specialists
+        showSpecialistsButton.addActionListener(this);
+        panel.add(showSpecialistsButton);
 
         panel.setLayout(new FlowLayout());
         panel.add(welcomeTextLabel);
-        panel.add(specialistButton);
 
         frame.setLayout(new FlowLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,7 +56,7 @@ public class HomeUI extends UI implements ActionListener  {
             PortalGUI portal = PortalGUI.returnSingleton();
             portal.requestPastAppointments("Temp name"); //TDDO: change temp name to user name!
         }
-        else if (e.getSource() == specialistButton)
+        else if (e.getSource() == showSpecialistsButton)
         {
             this.disposeFrame();
             PortalGUI portal = PortalGUI.returnSingleton();

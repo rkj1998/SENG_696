@@ -52,6 +52,13 @@ public class PortalGUI {
     {
         portalAgentInstance.specialistsListRequest();
     }
+
+    public void requestSpecialist()
+    {
+
+        portalAgentInstance.specialistsListRequest();
+    }
+
     public void requestAvailability(String specialistEmail)
     {
         portalAgentInstance.availabilityRequest(specialistEmail);
@@ -77,6 +84,7 @@ public class PortalGUI {
         this.patientEmail = email;
         portalAgentInstance.authRequest(email, password);
     }
+    
 
     public void showSpecialistList(ArrayList<ArrayList<String>> specialists)
     {

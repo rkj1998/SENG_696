@@ -51,7 +51,7 @@ public class SpecialistAgent extends Agent{
                             {
                                 content = content.concat(specialists.get(key).getName());
                                 content = content.concat(Utils.DELIMITER);
-                                content = content.concat(specialists.get(key).getProfession());
+                                content = content.concat(specialists.get(key).getSpecialization());
                                 content = content.concat(Utils.DELIMITER);
                                 content = content.concat(specialists.get(key).getEmail());
                                 content = content.concat(Utils.DELIMITER);

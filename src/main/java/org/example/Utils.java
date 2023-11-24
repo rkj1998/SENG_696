@@ -36,23 +36,17 @@ public class Utils {
     public final static Integer HOURLY_WAGE = 60; // In CAD for example
 
     public static Hashtable<String, Specialist> generateSpecialists() {
-        // a sample specialist list is hard coded and returned in this func
-        Hashtable<String, Specialist> specialists = new Hashtable<String, Specialist>();
+        Hashtable<String, Specialist> specialists = new Hashtable<>();
 
-        TimeSlot timeSlot1 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 15, 10, 0),
-                50, false);
-        TimeSlot timeSlot2 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 15, 11, 0),
-                50, false);
-        TimeSlot timeSlot3 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 16, 14, 0),
-                50, false);
-        TimeSlot timeSlot4 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 16, 16, 0),
-                50, false);
-        TimeSlot timeSlot5 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 17, 18, 0),
-                50, false);
-        TimeSlot timeSlot6 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 17, 19, 0),
-                50, false);
+        // Define common time slots for specialists
+        TimeSlot timeSlot1 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 15, 10, 0), 50, false);
+        TimeSlot timeSlot2 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 15, 11, 0), 50, false);
+        TimeSlot timeSlot3 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 16, 14, 0), 50, false);
+        TimeSlot timeSlot4 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 16, 16, 0), 50, false);
+        TimeSlot timeSlot5 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 17, 18, 0), 50, false);
+        TimeSlot timeSlot6 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 17, 19, 0), 50, false);
 
-        ArrayList<TimeSlot> timing = new ArrayList<TimeSlot>();
+        ArrayList<TimeSlot> timing = new ArrayList<>();
         timing.add(timeSlot1);
         timing.add(timeSlot2);
         timing.add(timeSlot3);
@@ -60,39 +54,24 @@ public class Utils {
         timing.add(timeSlot5);
         timing.add(timeSlot6);
 
-        Specialist specialist1= new Specialist("Mona Falsafi", "neurobiology1",
-                "mona.falsafi@yahoo.com", timing);
-        Specialist specialist2= new Specialist("Nazanin Habibi", "neurobiology2",
-                "nazanin.habibi@yahoo.com", timing);
-        Specialist specialist3= new Specialist("Shadi Fatourehchi", "neurobiology3",
-                "shadi.fatourehchi@yahoo.com",  timing);
-        Specialist specialist4= new Specialist("Khaled Aslani", "neurobiology4",
-                "khaled.aslani@yahoo.com", timing);
-        Specialist specialist5= new Specialist("Marzie Masoudi", "neurobiology5"
-                ,"marzie.masoudi@yahoo.com",  timing);
-        Specialist specialist6= new Specialist("Niousha Pordavoody", "neurobiology6"
-                ,"niousha.pordavoody@yahoo.com", timing);
-        Specialist specialist7= new Specialist("Maryam Falahatpishe", "neurobiology7",
-                "maryam.falahatpishe@yahoo.com", timing);
-        Specialist specialist8= new Specialist("Mohamad Mehdi Badiei", "neurobiology8"
-                ,"mohammad.badiei@yahoo.com", timing);
-        Specialist specialist9= new Specialist("Amir Fadaeipour", "neurobiology9",
-                "amir.fadaeipour@yahoo.com", timing);
-        Specialist specialist10= new Specialist("Azar Saeidi nasab", "neurobiology10",
-                "azar.saeidi@yahoo.com", timing);
-
-        specialists.put(specialist1.getEmail(),specialist1);
-        specialists.put(specialist2.getEmail(), specialist2);
-        specialists.put(specialist3.getEmail(), specialist3);
-        specialists.put(specialist4.getEmail(),specialist4);
-        specialists.put(specialist5.getEmail(),specialist5);
-        specialists.put(specialist6.getEmail(),specialist6);
-        specialists.put(specialist7.getEmail(),specialist7);
-        specialists.put(specialist8.getEmail(),specialist8);
-        specialists.put(specialist9.getEmail(),specialist9);
-        specialists.put(specialist10.getEmail(),specialist10);
+        // Generate specialists for different specializations
+        String[] specializations = {"Neuroscience", "Cardiology", "Orthopedics", "Dermatology", "Ophthalmology"};
+        for (String specialization : specializations) {
+            for (int j = 1; j <= 5; j++) {
+                String specialistName = generateHumanName(j);
+                String email = specialistName.toLowerCase().replace(" ", ".") + "@example.com";
+                Specialist specialist = new Specialist(specialistName, specialization, email, timing);
+                specialists.put(specialist.getEmail(), specialist);
+            }
+        }
 
         return specialists;
+    }
+
+    private static String generateHumanName(int index) {
+        String[] firstNames = {"John", "Emma", "Michael", "Sophia", "David"};
+        String[] lastNames = {"Smith", "Johnson", "Williams", "Jones", "Brown"};
+        return firstNames[index % firstNames.length] + " " + lastNames[index % lastNames.length];
     }
 
     public static Hashtable<String, User> generatePatients() {
