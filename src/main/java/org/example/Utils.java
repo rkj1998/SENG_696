@@ -10,7 +10,9 @@ import jade.domain.FIPAException;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Random;
 
 public class Utils {
     public final static int FAILURE = 0;
@@ -37,42 +39,47 @@ public class Utils {
 
     public static Hashtable<String, Specialist> generateSpecialists() {
         Hashtable<String, Specialist> specialists = new Hashtable<>();
-
-        // Define common time slots for specialists
-        TimeSlot timeSlot1 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 15, 10, 0), 50, false);
-        TimeSlot timeSlot2 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 15, 11, 0), 50, false);
-        TimeSlot timeSlot3 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 16, 14, 0), 50, false);
-        TimeSlot timeSlot4 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 16, 16, 0), 50, false);
-        TimeSlot timeSlot5 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 17, 18, 0), 50, false);
-        TimeSlot timeSlot6 = new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 17, 19, 0), 50, false);
+        Random random = new Random();
 
         ArrayList<TimeSlot> timing = new ArrayList<>();
-        timing.add(timeSlot1);
-        timing.add(timeSlot2);
-        timing.add(timeSlot3);
-        timing.add(timeSlot4);
-        timing.add(timeSlot5);
-        timing.add(timeSlot6);
+        timing.add(new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 15, 10, 0), 50, false));
+        timing.add(new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 15, 11, 0), 50, false));
+        timing.add(new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 16, 14, 0), 50, false));
+        timing.add(new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 16, 16, 0), 50, false));
+        timing.add(new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 17, 18, 0), 50, false));
+        timing.add(new TimeSlot(LocalDateTime.of(2022, Month.DECEMBER, 17, 19, 0), 50, false));
 
-        // Generate specialists for different specializations
         String[] specializations = {"Neuroscience", "Cardiology", "Orthopedics", "Dermatology", "Ophthalmology"};
-        for (String specialization : specializations) {
-            for (int j = 1; j <= 5; j++) {
-                String specialistName = generateHumanName(j);
-                String email = specialistName.toLowerCase().replace(" ", ".") + "@example.com";
-                Specialist specialist = new Specialist(specialistName, specialization, email, timing);
-                specialists.put(specialist.getEmail(), specialist);
-            }
+
+        HashSet<String> usedNames = new HashSet<>();
+
+        for (int j = 0; j < 25; j++) {
+            String specialistName;
+            do {
+                specialistName = generateHumanName(random);
+            } while (usedNames.contains(specialistName));
+
+            usedNames.add(specialistName);
+
+            String email = specialistName.toLowerCase().replace(" ", ".") + "@example.com";
+            String specialization = specializations[random.nextInt(specializations.length)];
+            Specialist specialist = new Specialist(specialistName, specialization, email, timing);
+            specialists.put(specialist.getEmail(), specialist);
         }
+
+        System.out.println("THESE ARE: " + specialists.size());
 
         return specialists;
     }
 
-    private static String generateHumanName(int index) {
+
+    private static String generateHumanName(Random random) {
         String[] firstNames = {"John", "Emma", "Michael", "Sophia", "David"};
         String[] lastNames = {"Smith", "Johnson", "Williams", "Jones", "Brown"};
-        return firstNames[index % firstNames.length] + " " + lastNames[index % lastNames.length];
+        return firstNames[random.nextInt(firstNames.length)] + " " + lastNames[random.nextInt(lastNames.length)];
     }
+
+
 
     public static Hashtable<String, User> generatePatients() {
 

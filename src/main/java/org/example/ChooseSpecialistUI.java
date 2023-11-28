@@ -48,6 +48,7 @@ public class ChooseSpecialistUI extends UI implements ActionListener  {
     public void tableHandler(ArrayList<ArrayList<String>> specialist)
     {
         this.specialists = specialist;
+        System.out.println(specialist);
         //parse input to an array list of strings and show it in chooseSpecialistUI
         String[][] specialistsList = new String[specialists.size()][3];
         int specialistCounter = 0;
@@ -63,7 +64,7 @@ public class ChooseSpecialistUI extends UI implements ActionListener  {
             specialistsList[specialistCounter] = tempArray;
             specialistCounter += 1;
         }
-        String[] columnNames = { "ID", "Specialist Name", "Specialist Profession"};
+        String[] columnNames = { "ID", "Specialist Name", "Specialization"};
         DefaultTableModel model = new DefaultTableModel(specialistsList, columnNames);
 
         this.appointmentsTable = new JTable(model);

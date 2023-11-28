@@ -90,6 +90,7 @@ public class PortalAgent extends Agent{
                                     specialistsLists.add(specialistInfo);
                                 }
                             }
+                            System.out.println(specialistsLists);
 
                             PortalUIInstance.showSpecialistList(specialistsLists);
                             break;
@@ -170,19 +171,27 @@ public class PortalAgent extends Agent{
         });
     }
 
-    public void specialistsListRequest() {
+    public void specialistsListRequest(final String specialization) {
         addBehaviour(new OneShotBehaviour() {
             @Override
             public void action() {
                 ACLMessage message = new ACLMessage(Utils.SPECIALISTS_LISTS_REQUEST);
 
-                System.out.println("PORTAL: Requesting to get specialists list from " + specialistAgent.getLocalName());
+                System.out.println("PORTAL: Requesting specialists list from " + specialistAgent.getLocalName());
+
+                // If a specialization is provided, include it in the message content
+                if (!specialization.isEmpty()) {
+                    message.setContent(specialization);
+                    System.out.println("PORTAL: Requesting specialists for specialization: " + specialization);
+                }
 
                 message.addReceiver(specialistAgent);
                 send(message);
             }
         });
     }
+
+
 
     public void availabilityRequest(String specialistEmail) {
         addBehaviour(new OneShotBehaviour() {

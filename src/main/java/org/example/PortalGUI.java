@@ -48,16 +48,16 @@ public class PortalGUI {
 
     }
 
-    public void requestSpecialistList()
-    {
-        portalAgentInstance.specialistsListRequest();
+    public void requestSpecialistList(String specialization) {
+        if (specialization.isEmpty()) {
+            // Return all specialists
+            portalAgentInstance.specialistsListRequest("");
+        } else {
+            // Return specialists for the selected specialization
+            portalAgentInstance.specialistsListRequest(specialization);
+        }
     }
 
-    public void requestSpecialist()
-    {
-
-        portalAgentInstance.specialistsListRequest();
-    }
 
     public void requestAvailability(String specialistEmail)
     {
@@ -84,7 +84,7 @@ public class PortalGUI {
         this.patientEmail = email;
         portalAgentInstance.authRequest(email, password);
     }
-    
+
 
     public void showSpecialistList(ArrayList<ArrayList<String>> specialists)
     {

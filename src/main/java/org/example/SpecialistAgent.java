@@ -7,13 +7,15 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
-
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Set;
 
 public class SpecialistAgent extends Agent{
     Hashtable <String, Specialist> specialists;
+
+
     protected void setup() {
 
         // Register specialist service so portal agent can search and find
@@ -43,24 +45,28 @@ public class SpecialistAgent extends Agent{
                     switch (msg.getPerformative()){
                         case Utils.SPECIALISTS_LISTS_REQUEST:
                             System.out.println("SPECIALIST: specialists' list request received");
-                            //geting a message from portal and iterate over the specialist to get the three fields
+                            String requestedSpecialization = msg.getContent();
+
                             ACLMessage replySpecialistsList = msg.createReply();
                             replySpecialistsList.setPerformative(Utils.SPECIALISTS_LISTS_RESPONSE);
-                            Set<String> setOfKeys = specialists.keySet();
-                            for (String key : setOfKeys)
-                            {
-                                content = content.concat(specialists.get(key).getName());
-                                content = content.concat(Utils.DELIMITER);
-                                content = content.concat(specialists.get(key).getSpecialization());
-                                content = content.concat(Utils.DELIMITER);
-                                content = content.concat(specialists.get(key).getEmail());
-                                content = content.concat(Utils.DELIMITER);
-                            }
-                            System.out.println("SPECIALIST: Sending specialists list back to portal");
 
+                            for (Specialist specialist : specialists.values()) {
+                                if (specialist.getSpecialization().equals(requestedSpecialization)) {
+                                    content = content.concat(specialist.getName());
+                                    content = content.concat(Utils.DELIMITER);
+                                    content = content.concat(specialist.getSpecialization());
+                                    content = content.concat(Utils.DELIMITER);
+                                    content = content.concat(specialist.getEmail());
+                                    content = content.concat(Utils.DELIMITER);
+                                }
+                            }
+
+                            System.out.println("SPECIALIST: Sending specialists list back to portal");
                             replySpecialistsList.setContent(content);
                             send(replySpecialistsList);
                             break;
+
+
 
                         case Utils.AVAILABILITY_REQUEST:
                             System.out.println("SPECIALIST: chosen specialist's availability request received");

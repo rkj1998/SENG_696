@@ -10,16 +10,19 @@ public class HomeUI extends UI implements ActionListener  {
     JButton pastAPPButton = new JButton("Past Appointments");
     JComboBox<String> specializationDropdown = new JComboBox<>();
     JButton showSpecialistsButton = new JButton("Show Specialists");
+
     private static HomeUI singleton = null;
     JPanel panel = new JPanel();
 
     private HomeUI(String frameTitle) {
-
         super(frameTitle);
         panel.setPreferredSize(new Dimension(250, 250));
         pastAPPButton.addActionListener(this);
+
         // Add the specialization dropdown
+        populateSpecializationDropdown(); // Populate the dropdown
         panel.add(specializationDropdown);
+
         // Add a button to trigger displaying specialists
         showSpecialistsButton.addActionListener(this);
         panel.add(showSpecialistsButton);
@@ -34,38 +37,38 @@ public class HomeUI extends UI implements ActionListener  {
         frame.pack();
     }
 
-
-    public static HomeUI createUI()
-    {
-        if (singleton == null)
-        {
-            singleton = new HomeUI("Home");
-
-        }
-        return singleton;
-
+    private void populateSpecializationDropdown() {
+        specializationDropdown.addItem("Neuroscience");
+        specializationDropdown.addItem("Cardiology");
+        specializationDropdown.addItem("Orthopedics");
+        specializationDropdown.addItem("Dermatology");
+        specializationDropdown.addItem("Ophthalmology");
     }
 
+    public static HomeUI createUI() {
+        if (singleton == null) {
+            singleton = new HomeUI("Home");
+        }
+        return singleton;
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == pastAPPButton)
-        {
+        if (e.getSource() == pastAPPButton) {
             this.disposeFrame();
-            //TODO:ask for past appointment history
+            // TODO: ask for past appointment history
             PortalGUI portal = PortalGUI.returnSingleton();
-            portal.requestPastAppointments("Temp name"); //TDDO: change temp name to user name!
-        }
-        else if (e.getSource() == showSpecialistsButton)
-        {
-            this.disposeFrame();
-            PortalGUI portal = PortalGUI.returnSingleton();
-            portal.requestSpecialistList();
-        }
+            portal.requestPastAppointments("Temp name"); // TODO: change temp name to user name!
+        } else if (e.getSource() == showSpecialistsButton) {
+            // Get the selected specialization from the dropdown
+            String selectedSpecialization = (String) specializationDropdown.getSelectedItem();
 
+            this.disposeFrame();
+            PortalGUI portal = PortalGUI.returnSingleton();
+            portal.requestSpecialistList(selectedSpecialization); // Pass the selected specialization
+        }
     }
-    public void setName(String name)
-    {
+    public void setName(String name) {
         welcomeTextLabel.setText("Welcome user " + name);
     }
 }
