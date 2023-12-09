@@ -4,6 +4,8 @@
 # Health Portal System
 
 The Health Portal System is a multi-agent system designed to facilitate interactions between patients and medical specialists. The system allows users to register, schedule appointments with specialists, and manage their health-related activities.
+This repository contains the codebase for a Multi-Agent System designed for Healthcare Appointment Scheduling, developed as part of the Agent-based Software Engineering (SENG696) course by Group 5 - Rahul Jha and Narges Babadi.
+
 
 ## Table of Contents
 - [Introduction](#health-portal-system)
@@ -27,9 +29,48 @@ The Health Portal System is a multi-agent system designed to facilitate interact
 
 The system is built on a multi-agent architecture using JADE. The primary agents include:
 
-- **Portal Agent:** Manages user interactions, appointments, and payments.
-- **Specialist Agent:** Represents medical specialists, providing services and availability.
-- **User Agent:** Represents patients, handling user authentication and registration.
+## Primary Agents
+
+### 1. Portal Agent
+
+- **Description:** Handles patient requests for appointments.
+- **Functionality:**
+  - Manages user registration and login.
+  - Displays specialist categories and lists.
+  - Requests availability from the Appointment Agent.
+  - Collects user preferences and interacts with the Payment Agent.
+  - Generates a booking memo for users.
+
+### 2. Access Agent
+
+- **Description:** Manages user registration and login processes.
+- **Functionality:**
+  - Receives registration requests from the Portal Agent.
+  - Validates user login information against the Patient Database.
+  - Saves new user information in the Patient Database.
+
+### 3. Specialist Agent
+
+- **Description:** Provides information about available specialists.
+- **Functionality:**
+  - Supplies a list of specialist categories.
+  - Based on user selection, provides a list of available specialists.
+  - Retrieves availability information for the selected specialist.
+
+### 4. Payment Agent
+
+- **Description:** Facilitates patient payments.
+- **Functionality:**
+  - Receives payment information from the Portal Agent.
+  - Validates payment information.
+  - Returns transaction details and status to the Portal Agent.
+
+### 5. Appointment Agent
+
+- **Description:** Manages appointment scheduling.
+- **Functionality:**
+  - Writes appointment information to the Appointment Database.
+  - Updates payment status after successful payment.
 
 ## Getting Started
 
@@ -55,8 +96,10 @@ To run the Health Portal System locally, follow these steps:
 
 4. Schedule appointments, view specialists, and manage your health-related activities.
 
-## Screenshots
+## Contributors
 
+- Rahul Jha
+- Narges Babadi
 
 ## License
 
