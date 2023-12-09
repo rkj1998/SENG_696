@@ -9,9 +9,16 @@ import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-public class PaymentAgent extends Agent{
-    protected void setup(){
-        System.out.println("Hallo! Payment-agent "+getAID().getName()+" is ready.");
+/**
+ * The PaymentAgent class represents an agent responsible for handling payment-related tasks in the healthcare appointment system.
+ */
+public class PaymentAgent extends Agent {
+
+    /**
+     * Setup method for initializing the PaymentAgent.
+     */
+    protected void setup() {
+        System.out.println("Hello! Payment-agent " + getAID().getName() + " is ready.");
 
         // Register payment service so portal agent can search and find
         DFAgentDescription dfd = new DFAgentDescription();
@@ -22,33 +29,37 @@ public class PaymentAgent extends Agent{
         dfd.addServices(sd);
         try {
             DFService.register(this, dfd);
-        }
-        catch (FIPAException fe) {
+        } catch (FIPAException fe) {
             fe.printStackTrace();
         }
 
-        addBehaviour(new paymentServer());
+        addBehaviour(new PaymentServer());
     }
 
+    /**
+     * Take down method for cleaning up resources when the agent is terminated.
+     */
     protected void takeDown() {
         // Printout a dismissal message
-        System.out.println("Payment-agent "+getAID().getName()+" terminating.");
+        System.out.println("Payment-agent " + getAID().getName() + " terminating.");
     }
 
-    private class paymentServer extends CyclicBehaviour{
-        public void action(){
-            MessageTemplate mt=MessageTemplate.MatchPerformative(Utils.PAYMENT_REQUEST);
-            ACLMessage msg=myAgent.receive(mt);
-            if (msg!=null){
-                System.out.println("PAYMENT: payment request received.");
-                String info = msg.getContent();
+    /**
+     * The paymentServer class is a CyclicBehaviour defining the behavior of the PaymentAgent.
+     */
+    private class PaymentServer extends CyclicBehaviour {
+        public void action() {
+            MessageTemplate mt = MessageTemplate.MatchPerformative(Utils.PAYMENT_REQUEST);
+            ACLMessage msg = myAgent.receive(mt);
+            if (msg != null) {
+                System.out.println("PAYMENT: Payment request received.");
+                // Process the payment request
                 ACLMessage reply = msg.createReply();
                 reply.setPerformative(Utils.PAYMENT_RESPONSE);
                 reply.setContent(Utils.MESSAGE_SUCCESS);
-                System.out.println("PAYMENT: sending payment confirmation back to portal.");
+                System.out.println("PAYMENT: Sending payment confirmation back to portal.");
                 myAgent.send(reply);
-            }
-            else {
+            } else {
                 block();
             }
         }

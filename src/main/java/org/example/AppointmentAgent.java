@@ -12,12 +12,20 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class AppointmentAgent extends Agent{
+/**
+ * The AppointmentAgent class represents an agent responsible for managing healthcare appointments.
+ */
+public class AppointmentAgent extends Agent {
 
+    // List to store the appointments managed by the agent
     ArrayList<Appointment> appointments;
 
+    /**
+     * Setup method to initialize the AppointmentAgent.
+     */
     protected void setup() {
         appointments = new ArrayList<Appointment>();
+
         // Register appointment service so portal agent can search and find
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName(getAID());
@@ -27,10 +35,11 @@ public class AppointmentAgent extends Agent{
         dfd.addServices(sd);
         try {
             DFService.register(this, dfd);
-        }
-        catch (FIPAException fe) {
+        } catch (FIPAException fe) {
             fe.printStackTrace();
         }
+
+        // Add behavior to handle incoming messages
         addBehaviour(new CyclicBehaviour() {
             @Override
             public void action() {
@@ -39,7 +48,8 @@ public class AppointmentAgent extends Agent{
 
                 if (msg != null) {
                     String[] payloadLst = msg.getContent().split(Utils.DELIMITER);
-                    switch (msg.getPerformative()){
+
+                    switch (msg.getPerformative()) {
                         case Utils.CREATE_APPOINTMENT_REQUEST:
                             ACLMessage reply = msg.createReply();
                             reply.setPerformative(Utils.CREATE_APPOINTMENT_RESPONSE);
@@ -56,6 +66,7 @@ public class AppointmentAgent extends Agent{
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                             LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, formatter);
 
+                            // Check if the appointment already exists
                             boolean alreadyExists = false;
                             for (Appointment appointment : appointments) {
                                 if (appointment.getPatientEmail().equals(patientEmail) &&
@@ -65,10 +76,10 @@ public class AppointmentAgent extends Agent{
                                 }
                             }
 
-                            if (alreadyExists){
+                            // If the appointment already exists, send failure response, else create and add the new appointment
+                            if (alreadyExists) {
                                 content = Utils.MESSAGE_FAILURE;
-                            }
-                            else {
+                            } else {
                                 Integer newAppointmentID = appointments.size();
                                 Appointment newAppointment = new Appointment(newAppointmentID, patientEmail,
                                         specialistEmail, dateTime, Utils.HOURLY_WAGE, Boolean.FALSE);

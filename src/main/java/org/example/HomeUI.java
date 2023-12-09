@@ -5,7 +5,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class HomeUI extends UI implements ActionListener  {
+/**
+ * The HomeUI class represents the user interface for the home screen of the healthcare appointment system.
+ */
+public class HomeUI extends UI implements ActionListener {
     JLabel welcomeTextLabel = new JLabel();
     JButton pastAPPButton = new JButton("Past Appointments");
     JComboBox<String> specializationDropdown = new JComboBox<>();
@@ -14,6 +17,11 @@ public class HomeUI extends UI implements ActionListener  {
     private static HomeUI singleton = null;
     JPanel panel = new JPanel();
 
+    /**
+     * Private constructor to enforce singleton pattern.
+     *
+     * @param frameTitle Title of the frame.
+     */
     private HomeUI(String frameTitle) {
         super(frameTitle);
         panel.setPreferredSize(new Dimension(250, 250));
@@ -37,6 +45,9 @@ public class HomeUI extends UI implements ActionListener  {
         frame.pack();
     }
 
+    /**
+     * Populate the specialization dropdown with predefined values.
+     */
     private void populateSpecializationDropdown() {
         specializationDropdown.addItem("Neuroscience");
         specializationDropdown.addItem("Cardiology");
@@ -45,6 +56,11 @@ public class HomeUI extends UI implements ActionListener  {
         specializationDropdown.addItem("Ophthalmology");
     }
 
+    /**
+     * Create or retrieve the singleton instance of HomeUI.
+     *
+     * @return The singleton instance of HomeUI.
+     */
     public static HomeUI createUI() {
         if (singleton == null) {
             singleton = new HomeUI("Home");
@@ -52,15 +68,20 @@ public class HomeUI extends UI implements ActionListener  {
         return singleton;
     }
 
+    /**
+     * Handle button click events.
+     *
+     * @param e The ActionEvent.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == pastAPPButton) {
+            // Trigger action to request past appointment history
             this.disposeFrame();
-            // TODO: ask for past appointment history
             PortalGUI portal = PortalGUI.returnSingleton();
             portal.requestPastAppointments("Temp name"); // TODO: change temp name to user name!
         } else if (e.getSource() == showSpecialistsButton) {
-            // Get the selected specialization from the dropdown
+            // Trigger action to request specialist list based on selected specialization from the dropdown
             String selectedSpecialization = (String) specializationDropdown.getSelectedItem();
 
             this.disposeFrame();
@@ -68,6 +89,12 @@ public class HomeUI extends UI implements ActionListener  {
             portal.requestSpecialistList(selectedSpecialization); // Pass the selected specialization
         }
     }
+
+    /**
+     * Set the welcome text to display the user's name.
+     *
+     * @param name The user's name.
+     */
     public void setName(String name) {
         welcomeTextLabel.setText("Welcome user " + name);
     }

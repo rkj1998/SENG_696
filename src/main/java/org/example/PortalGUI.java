@@ -1,8 +1,10 @@
 package org.example;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+/**
+ * The PortalGUI class represents the user interface for the healthcare appointment system.
+ */
 public class PortalGUI {
     private static PortalGUI singleton = null;
     PortalAgent portalAgentInstance;
@@ -10,44 +12,55 @@ public class PortalGUI {
     String specialistEmail;
     String patientName;
     Integer appID;
-    private PortalGUI(PortalAgent portalAgentInstance)
-    {
+
+    private PortalGUI(PortalAgent portalAgentInstance) {
         this.portalAgentInstance = portalAgentInstance;
     }
 
-
-    public static PortalGUI createUI(PortalAgent portalAgentInstance)
-    {
-        if (singleton == null)
-        {
+    /**
+     * Creates a singleton instance of PortalGUI.
+     *
+     * @param portalAgentInstance The associated PortalAgent instance.
+     * @return The singleton instance of PortalGUI.
+     */
+    public static PortalGUI createUI(PortalAgent portalAgentInstance) {
+        if (singleton == null) {
             singleton = new PortalGUI(portalAgentInstance);
-
         }
         return singleton;
-
     }
-    public static PortalGUI returnSingleton()
-    {
+
+    /**
+     * Retrieves the singleton instance of PortalGUI.
+     *
+     * @return The singleton instance of PortalGUI.
+     */
+    public static PortalGUI returnSingleton() {
         return singleton;
     }
 
-
-    public void startGUI()
-    {
+    /**
+     * Starts the access UI.
+     */
+    public void startGUI() {
         AccessUI accessUIInstance = AccessUI.createUI();
         accessUIInstance.show();
-
-
     }
 
-    public void showHome()
-    {
+    /**
+     * Displays the home UI.
+     */
+    public void showHome() {
         HomeUI home = HomeUI.createUI();
         home.setName(this.patientName);
         home.show();
-
     }
 
+    /**
+     * Requests a list of specialists based on the provided specialization.
+     *
+     * @param specialization The specialization for filtering specialists (optional).
+     */
     public void requestSpecialistList(String specialization) {
         if (specialization.isEmpty()) {
             // Return all specialists
@@ -58,121 +71,159 @@ public class PortalGUI {
         }
     }
 
-
-    public void requestAvailability(String specialistEmail)
-    {
+    /**
+     * Requests the availability of a specialist.
+     *
+     * @param specialistEmail Email of the specialist.
+     */
+    public void requestAvailability(String specialistEmail) {
         portalAgentInstance.availabilityRequest(specialistEmail);
     }
-    public void requestRegister(String name,String email,String phone,String password)
-    {
-        portalAgentInstance.registerRequest(name,email,phone,password);
+
+    /**
+     * Requests user registration.
+     *
+     * @param name     User's name.
+     * @param email    User's email.
+     * @param phone    User's phone number.
+     * @param password User's password.
+     */
+    public void requestRegister(String name, String email, String phone, String password) {
+        portalAgentInstance.registerRequest(name, email, phone, password);
     }
-    public void requestPayment()
-    {
+
+    /**
+     * Requests a payment for a specific appointment.
+     */
+    public void requestPayment() {
         portalAgentInstance.paymentRequest(appID);
     }
-    public void requestCreateAppointment(LocalDateTime appDateTime)
-    {
+
+    /**
+     * Requests the creation of a new appointment.
+     *
+     * @param appDateTime      Date and time of the appointment.
+     */
+    public void requestCreateAppointment(LocalDateTime appDateTime) {
         portalAgentInstance.createAppointmentRequest(appDateTime, this.patientEmail, this.specialistEmail);
     }
-    public void requestPastAppointments(String name)
-    {
-        //TODO: call the request function (not implemented yet.)
+
+    /**
+     * Requests the user's past appointments (Not implemented yet).
+     *
+     * @param name User's name.
+     */
+    public void requestPastAppointments(String name) {
+        // TODO: Implement this function
     }
-    public void requestLoginUser(String email, String password)
-    {
+
+    /**
+     * Requests user login.
+     *
+     * @param email    User's email.
+     * @param password User's password.
+     */
+    public void requestLoginUser(String email, String password) {
         this.patientEmail = email;
         portalAgentInstance.authRequest(email, password);
     }
 
-
-    public void showSpecialistList(ArrayList<ArrayList<String>> specialists)
-    {
+    /**
+     * Displays the list of specialists in the home UI.
+     *
+     * @param specialists List of specialists' information.
+     */
+    public void showSpecialistList(ArrayList<ArrayList<String>> specialists) {
         HomeUI home = HomeUI.createUI();
         home.disposeFrame();
         ChooseSpecialistUI specialistUI = ChooseSpecialistUI.createUI();
         specialistUI.tableHandler(specialists);
         specialistUI.show();
     }
-    public void showAvailability(ArrayList<LocalDateTime> availabilityTimes)
-    {
+
+    /**
+     * Displays the availability of a specialist in the choose specialist UI.
+     *
+     * @param availabilityTimes List of available date and time slots.
+     */
+    public void showAvailability(ArrayList<LocalDateTime> availabilityTimes) {
         ChooseSpecialistUI specialistUI = ChooseSpecialistUI.createUI();
         specialistUI.disposeFrame();
-        //parse input to an array list of strings and show it in chooseSpecialistUI
         SelectAppointmentUI appUI = SelectAppointmentUI.createUI();
         appUI.tableHandler(availabilityTimes);
         appUI.show();
     }
 
-    public void loginConfirm(boolean loginConfirm, String name)
-    {
+    /**
+     * Handles the login confirmation response.
+     *
+     * @param loginConfirm Whether the login was successful.
+     * @param name         User's name.
+     */
+    public void loginConfirm(boolean loginConfirm, String name) {
         this.patientName = name;
-        if (loginConfirm)
-        {
-            LoginUI loginUIInstance = LoginUI.createUI();
+        LoginUI loginUIInstance = LoginUI.createUI();
+        if (loginConfirm) {
             loginUIInstance.showSuccessLogin();
             loginUIInstance.disposeFrame();
             showHome();
-        }
-        else {
-            LoginUI loginUIInstance = LoginUI.createUI();
+        } else {
             loginUIInstance.showFailureMessage();
         }
     }
 
-    public void appointmentConfirm(boolean appConfirm, Integer appID, float amount)
-    {
+    /**
+     * Handles the appointment confirmation response.
+     *
+     * @param appConfirm Whether the appointment was successfully created.
+     * @param appID      Appointment ID.
+     * @param amount     Payment
+
+    amount.
+     */
+    public void appointmentConfirm(boolean appConfirm, Integer appID, float amount) {
         this.appID = appID;
-        if (appConfirm)
-        {
-            SelectAppointmentUI selectAPPUI = SelectAppointmentUI.createUI();
+        SelectAppointmentUI selectAPPUI = SelectAppointmentUI.createUI();
+        if (appConfirm) {
             selectAPPUI.disposeFrame();
             PaymentUI paymentUIInstance = PaymentUI.createUI();
             paymentUIInstance.showAmount(amount);
             paymentUIInstance.show();
-        }
-        else {
-            SelectAppointmentUI selectAPPUI = SelectAppointmentUI.createUI();
+        } else {
             selectAPPUI.showFailureMessage();
         }
-
     }
 
-
-    public void paymentConfirm(boolean confirm)
-    {
-        if (confirm)
-        {
-            PaymentUI paymentUIInstance = PaymentUI.createUI();
+    /**
+     * Handles the payment confirmation response.
+     *
+     * @param confirm Whether the payment was successful.
+     */
+    public void paymentConfirm(boolean confirm) {
+        PaymentUI paymentUIInstance = PaymentUI.createUI();
+        if (confirm) {
             paymentUIInstance.showSuccess();
             paymentUIInstance.disposeFrame();
             showHome();
-        }
-        else {
-            PaymentUI paymentUIInstance = PaymentUI.createUI();
+        } else {
             paymentUIInstance.showFailureMessage();
         }
     }
 
-
-    public void registerConfirm(boolean confirm)
-    {
-        if (confirm)
-        {
-            RegisterUI registerUIInstance = RegisterUI.createUI();
+    /**
+     * Handles the registration confirmation response.
+     *
+     * @param confirm Whether the registration was successful.
+     */
+    public void registerConfirm(boolean confirm) {
+        RegisterUI registerUIInstance = RegisterUI.createUI();
+        if (confirm) {
             registerUIInstance.showSuccessRegister();
             registerUIInstance.disposeFrame();
             LoginUI loginUIInstance = LoginUI.createUI();
             loginUIInstance.show();
-
-        }
-        else {
-            RegisterUI registerUIInstance = RegisterUI.createUI();
+        } else {
             registerUIInstance.showFailureMessage();
         }
     }
-
-
-
-
 }

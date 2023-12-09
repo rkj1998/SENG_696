@@ -1,4 +1,5 @@
 package org.example;
+
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -11,22 +12,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
-public class PortalAgent extends Agent{
+/**
+ * The PortalAgent class represents the main agent managing interactions between the user interface
+ * and other specialized agents in the healthcare appointment system.
+ */
+public class PortalAgent extends Agent {
 
     AID accessAgent;
     AID specialistAgent;
     AID appointmentAgent;
     AID paymentAgent;
     PortalGUI PortalUIInstance = PortalGUI.createUI(this);
-    protected void setup() {
 
+    /**
+     * Setup method called when the agent is started.
+     */
+    protected void setup() {
+        // Print information about the portal agent
         System.out.println("Hello world! This is portal agent!");
         System.out.println("My local name is " + getAID().getLocalName());
         System.out.println("My GUID is " + getAID().getName());
         System.out.println("My addresses are " + String.join(",", getAID().getAddressesArray()));
 
-        // a one shot behavior to get all services' AIDs
+        // A one-shot behavior to get all services' AIDs
         addBehaviour(new OneShotBehaviour() {
             @Override
             public void action() {
@@ -37,31 +45,33 @@ public class PortalAgent extends Agent{
             }
         });
 
+        // Start the GUI
         PortalUIInstance.startGUI();
+
+        // Cyclic behavior to handle incoming messages
         addBehaviour(new CyclicBehaviour() {
             public void action() {
-
                 ACLMessage msg;
                 msg = myAgent.receive();
 
                 if (msg != null) {
                     String[] payloadLst = msg.getContent().split(Utils.DELIMITER);
-                    switch (msg.getPerformative()){
+                    switch (msg.getPerformative()) {
                         case Utils.REGISTER_RESPONSE:
-                            System.out.println("PORTAL: Received register confirmation");
+                            // Handle registration confirmation
                             boolean registered = false;
                             if (payloadLst[0].equals(Utils.MESSAGE_SUCCESS)) {
                                 registered = true;
                             } else if (payloadLst[0].equals(Utils.MESSAGE_FAILURE)) {
                                 registered = false;
-                            }
-                            else
+                            } else {
                                 assert true : "UNKNOWN REGISTRATION MESSAGE";
+                            }
                             PortalUIInstance.registerConfirm(registered);
                             break;
 
                         case Utils.AUTH_RESPONSE:
-                            System.out.println("PORTAL: Received authentication confirmations");
+                            // Handle authentication confirmation
                             String confirmation = payloadLst[0];
                             boolean authenticated = false;
                             String name = "";
@@ -72,48 +82,46 @@ public class PortalAgent extends Agent{
                             } else if (confirmation.equals(Utils.MESSAGE_FAILURE)) {
                                 authenticated = false;
                                 System.out.println("PORTAL: Failed to authenticate");
-                            }
-                            else
+                            } else {
                                 assert true : "UNKNOWN AUTH MESSAGE";
+                            }
                             PortalUIInstance.loginConfirm(authenticated, name);
                             break;
 
                         case Utils.SPECIALISTS_LISTS_RESPONSE:
-                            System.out.println("PORTAL: Received specialists list");
+                            // Handle specialists list response
                             ArrayList<ArrayList<String>> specialistsLists = new ArrayList<>();
                             for (int i = 0; i < payloadLst.length; i++) {
                                 if (i % 3 == 0 && i != 0) {
                                     ArrayList<String> specialistInfo = new ArrayList<>();
-                                    specialistInfo.add(payloadLst[i-3]);
-                                    specialistInfo.add(payloadLst[i-2]);
-                                    specialistInfo.add(payloadLst[i-1]);
+                                    specialistInfo.add(payloadLst[i - 3]);
+                                    specialistInfo.add(payloadLst[i - 2]);
+                                    specialistInfo.add(payloadLst[i - 1]);
                                     specialistsLists.add(specialistInfo);
                                 }
                             }
-                            System.out.println(specialistsLists);
-
                             PortalUIInstance.showSpecialistList(specialistsLists);
                             break;
 
                         case Utils.AVAILABILITY_RESPONSE:
-                            System.out.println("PORTAL: Received specialist's availability");
+                            // Handle specialist's availability response
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                             ArrayList<LocalDateTime> dateTimes = new ArrayList<>();
 
-                            for (String dateTimeStr: payloadLst) {
+                            for (String dateTimeStr : payloadLst) {
                                 dateTimes.add(LocalDateTime.parse(dateTimeStr, formatter));
                             }
                             PortalUIInstance.showAvailability(dateTimes);
                             break;
 
                         case Utils.PAYMENT_RESPONSE:
-                            System.out.println("PORTAL: Received payment confirmation");
+                            // Handle payment confirmation
                             boolean paid = payloadLst[0].equals(Utils.MESSAGE_SUCCESS);
                             PortalUIInstance.paymentConfirm(paid);
                             break;
 
                         case Utils.CREATE_APPOINTMENT_RESPONSE:
-                            System.out.println("PORTAL: Received appointment creation's confirmation");
+                            // Handle appointment creation confirmation
                             boolean appointmentCreated = false;
                             int appointmentID = -1;
                             float amount = -1;
@@ -128,13 +136,25 @@ public class PortalAgent extends Agent{
                 }
             }
         });
-
     }
 
+    /**
+     * Method called when the agent is being shut down.
+     */
     protected void takeDown() {
-        System.out.println("Portal agent "+getAID().getName()+" terminating.");
+        System.out.println("Portal agent " + getAID().getName() + " terminating.");
     }
 
+    /**
+     * Request to register a new user.
+     *
+     * @param name        User's name.
+     * @param email       User's email.
+     * @param phoneNumber User's phone number.
+     * @param password
+
+    User's password.
+     */
     public void registerRequest(String name, String email, String phoneNumber, String password) {
         addBehaviour(new OneShotBehaviour() {
             @Override
@@ -153,6 +173,12 @@ public class PortalAgent extends Agent{
         });
     }
 
+    /**
+     * Request to authenticate a user.
+     *
+     * @param email         User's email.
+     * @param passwordHash  Hashed user's password.
+     */
     public void authRequest(String email, String passwordHash) {
         addBehaviour(new OneShotBehaviour() {
             @Override
@@ -171,6 +197,11 @@ public class PortalAgent extends Agent{
         });
     }
 
+    /**
+     * Request a list of specialists.
+     *
+     * @param specialization Specialization to filter specialists (optional).
+     */
     public void specialistsListRequest(final String specialization) {
         addBehaviour(new OneShotBehaviour() {
             @Override
@@ -191,8 +222,11 @@ public class PortalAgent extends Agent{
         });
     }
 
-
-
+    /**
+     * Request the availability of a specialist.
+     *
+     * @param specialistEmail Email of the specialist.
+     */
     public void availabilityRequest(String specialistEmail) {
         addBehaviour(new OneShotBehaviour() {
             @Override
@@ -209,6 +243,11 @@ public class PortalAgent extends Agent{
         });
     }
 
+    /**
+     * Request a payment for a specific appointment.
+     *
+     * @param appointmentID ID of the appointment.
+     */
     public void paymentRequest(Integer appointmentID) {
         addBehaviour(new OneShotBehaviour() {
             @Override
@@ -225,6 +264,14 @@ public class PortalAgent extends Agent{
             }
         });
     }
+
+    /**
+     * Request the creation of a new appointment.
+     *
+     * @param appDateTime      Date and time of the appointment.
+     * @param patientEmail     Email of the patient.
+     * @param specialistEmail Email of the specialist.
+     */
     public void createAppointmentRequest(LocalDateTime appDateTime, String patientEmail, String specialistEmail) {
         addBehaviour(new OneShotBehaviour() {
             @Override
@@ -249,4 +296,3 @@ public class PortalAgent extends Agent{
         });
     }
 }
-

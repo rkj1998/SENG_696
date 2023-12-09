@@ -2,16 +2,29 @@ package org.example;
 
 import java.time.LocalDateTime;
 
+/**
+ * The Appointment class represents an appointment in the healthcare system.
+ */
 public class Appointment {
-    private Integer appointmentID;
-    private String patientEmail;
-    private String specialistEmail;
-    private LocalDateTime dateTime;
-    private Integer amount; // price
-    private Boolean paid;
-    private Integer paymentTrackNo;
-    private LocalDateTime paymentDateTime;
+    private Integer appointmentID;          // Unique identifier for the appointment
+    private String patientEmail;            // Email of the patient associated with the appointment
+    private String specialistEmail;         // Email of the specialist associated with the appointment
+    private LocalDateTime dateTime;         // Date and time of the appointment
+    private Integer amount;                 // Price or cost of the appointment
+    private Boolean paid;                   // Indicates whether the appointment has been paid for
+    private Integer paymentTrackNo;         // Tracking number for payment
+    private LocalDateTime paymentDateTime;  // Date and time of payment
 
+    /**
+     * Constructor to initialize an Appointment object.
+     *
+     * @param appointmentID    Unique identifier for the appointment.
+     * @param patientEmail     Email of the patient associated with the appointment.
+     * @param specialistEmail  Email of the specialist associated with the appointment.
+     * @param dateTime         Date and time of the appointment.
+     * @param amount           Price or cost of the appointment.
+     * @param paid             Indicates whether the appointment has been paid for.
+     */
     public Appointment(Integer appointmentID, String patientEmail, String specialistEmail, LocalDateTime dateTime,
                        Integer amount, Boolean paid) {
         this.appointmentID = appointmentID;
@@ -21,6 +34,8 @@ public class Appointment {
         this.amount = amount;
         this.paid = paid;
     }
+
+    // Getter and setter methods for the Appointment class
 
     public Integer getAppointmentID() {
         return appointmentID;

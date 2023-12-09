@@ -9,18 +9,25 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class SelectAppointmentUI extends UI implements ActionListener  {
+/**
+ * The SelectAppointmentUI class represents the user interface for selecting an appointment time.
+ */
+public class SelectAppointmentUI extends UI implements ActionListener {
     JLabel descriptionTextField = new JLabel("");
     JTextField avalNumTextField = new JTextField("          ");
     JPanel panel = new JPanel();
-    JList<String> appointmentData;
-    JButton goBackHome = new JButton("Home");
     JTable appointmentsTable;
-    JButton submitButton = new JButton("submit");
+    JButton goBackHome = new JButton("Home");
+    JButton submitButton = new JButton("Submit");
     private static SelectAppointmentUI singleton = null;
     JCheckBox[][] checkboxes;
     ArrayList<LocalDateTime> availabilities;
 
+    /**
+     * Private constructor to create a SelectAppointmentUI instance.
+     *
+     * @param frameTitle The title of the frame.
+     */
     private SelectAppointmentUI(String frameTitle) {
         super(frameTitle);
         panel.setPreferredSize(new Dimension(500, 500));
@@ -36,40 +43,51 @@ public class SelectAppointmentUI extends UI implements ActionListener  {
         frame.add(panel);
     }
 
-    public void show(String[] data)
-    {
+    /**
+     * Displays the SelectAppointmentUI frame.
+     *
+     * @param data An array of data (not used).
+     */
+    public void show(String[] data) {
         frame.setVisible(true);
-
     }
-    public static SelectAppointmentUI createUI()
-    {
-        if (singleton == null)
-        {
-            singleton = new SelectAppointmentUI("past");
 
+    /**
+     * Creates a singleton instance of SelectAppointmentUI.
+     *
+     * @return The singleton instance of SelectAppointmentUI.
+     */
+    public static SelectAppointmentUI createUI() {
+        if (singleton == null) {
+            singleton = new SelectAppointmentUI("past");
         }
         return singleton;
-
     }
-    public void tableHandler(ArrayList<LocalDateTime> availabilities)
-    {
 
+    /**
+     * Handles the input availability times and displays them in a table.
+     *
+     * @param availabilities The list of available appointment times.
+     */
+    public void tableHandler(ArrayList<LocalDateTime> availabilities) {
         this.availabilities = availabilities;
-        //parse input to an array list of strings and show it in chooseSpecialistUI
-        String[][] avalabilityList = new String[availabilities.size()][2];
+
+        // Parse input to an array list of strings and show it in the ChooseSpecialistUI
+        String[][] availabilityList = new String[availabilities.size()][2];
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        int avalabilityCounter = 0;
-        for (int i=0; i< availabilities.size();i++)
-        {
+        int availabilityCounter = 0;
+
+        for (int i = 0; i < availabilities.size(); i++) {
             String[] tempArray = new String[2];
             tempArray[0] = Integer.toString(i);
             String time = availabilities.get(i).format(formatter);
             tempArray[1] = time;
-            avalabilityList[avalabilityCounter] = tempArray;
-            avalabilityCounter += 1;
+            availabilityList[availabilityCounter] = tempArray;
+            availabilityCounter += 1;
         }
-        String[] columnNames = { "Number", "Date/Time",};
-        DefaultTableModel model = new DefaultTableModel(avalabilityList, columnNames);
+
+        String[] columnNames = {"Number", "Date/Time",};
+        DefaultTableModel model = new DefaultTableModel(availabilityList, columnNames);
         this.appointmentsTable = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(appointmentsTable);
         panel.add(scrollPane);
@@ -79,42 +97,43 @@ public class SelectAppointmentUI extends UI implements ActionListener  {
         frame.pack();
     }
 
-
+    /**
+     * Handles the action performed event, triggered when buttons are clicked.
+     *
+     * @param e The ActionEvent object.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == this.submitButton)
-        {
+        if (e.getSource() == this.submitButton) {
             String numberString = avalNumTextField.getText();
-            numberString = numberString.replaceAll("\\s+","");
+            numberString = numberString.replaceAll("\\s+", "");
             int number = Integer.parseInt(numberString);
-            if (number < 0 || number >= availabilities.size())
-            {
+
+            if (number < 0 || number >= availabilities.size()) {
                 showFailureNoOptions();
                 return;
             }
             PortalGUI.returnSingleton().requestCreateAppointment(availabilities.get(number));
-
         }
 
-        if (e.getSource() == this.goBackHome)
-        {
+        if (e.getSource() == this.goBackHome) {
             this.disposeFrame();
             PortalGUI portal = PortalGUI.returnSingleton();
             portal.showHome();
-
         }
-
     }
 
-    public void showFailureNoOptions()
-    {
-        JOptionPane.showMessageDialog(null, "No options selected", "alert", JOptionPane.ERROR_MESSAGE);
-
-    }
-    public void showFailureMessage()
-    {
-        JOptionPane.showMessageDialog(null, "Creating appointment failed", "alert", JOptionPane.ERROR_MESSAGE);
-
+    /**
+     * Displays a failure message when no options are selected.
+     */
+    public void showFailureNoOptions() {
+        JOptionPane.showMessageDialog(null, "No options selected", "Alert", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Displays a failure message for a general appointment creation failure.
+     */
+    public void showFailureMessage() {
+        JOptionPane.showMessageDialog(null, "Creating appointment failed", "Alert", JOptionPane.ERROR_MESSAGE);
+    }
 }
