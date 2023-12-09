@@ -7,10 +7,10 @@ import java.awt.event.ActionListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-
+/**
+ * The LoginUI class represents the user interface for the login screen of the healthcare appointment system.
+ */
 public class LoginUI extends UI implements ActionListener {
-
 
     private JTextField emailTextField = new JTextField(20);
     private JPasswordField passwordField = new JPasswordField(20);
@@ -18,6 +18,11 @@ public class LoginUI extends UI implements ActionListener {
 
     private static LoginUI singleton = null;
 
+    /**
+     * Private constructor to enforce singleton pattern.
+     *
+     * @param frameTitle Title of the frame.
+     */
     private LoginUI(String frameTitle) {
         super(frameTitle);
 
@@ -50,12 +55,23 @@ public class LoginUI extends UI implements ActionListener {
         frame.setLocationRelativeTo(null);
     }
 
+    /**
+     * Create a label with specified text.
+     *
+     * @param text The text for the label.
+     * @return The created label.
+     */
     private JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
         label.setPreferredSize(new Dimension(80, 20));
         return label;
     }
 
+    /**
+     * Create or retrieve the singleton instance of LoginUI.
+     *
+     * @return The singleton instance of LoginUI.
+     */
     public static LoginUI createUI() {
         if (singleton == null) {
             singleton = new LoginUI("Login");
@@ -63,52 +79,61 @@ public class LoginUI extends UI implements ActionListener {
         return singleton;
     }
 
-
+    /**
+     * Handle button click events.
+     *
+     * @param e The ActionEvent.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == submitButton)
-        {
+        if (e.getSource() == submitButton) {
+            // Retrieve email and password input
             String email = emailTextField.getText();
             String password = new String(passwordField.getPassword());
 
-//            System.out.println(passwordTextField.getText());
-            // regex from https://stackoverflow.com/questions/624581/what-is-the-best-java-email-address-validation-method
+            // Validate email using regular expression
             Pattern pattern = Pattern.compile("^.+@.+\\..+$");
             Matcher matcher = pattern.matcher(email);
             boolean doesItMatch = matcher.matches();
-            if (!doesItMatch)
-            {
+
+            // Show error messages if validation fails
+            if (!doesItMatch) {
                 this.showFailureEmail();
             }
-            if (password.length() < 3 || password.length() > 10)
-            {
+            if (password.length() < 3 || password.length() > 10) {
                 this.showFailurePassword();
             }
 
+            // Request login using the provided credentials
             PortalGUI.returnSingleton().requestLoginUser(email, password);
         }
-
     }
 
-    public void showFailureMessage()
-    {
+    /**
+     * Display a failure message for general login failure.
+     */
+    public void showFailureMessage() {
         JOptionPane.showMessageDialog(null, "Login failed", "alert", JOptionPane.ERROR_MESSAGE);
-
     }
 
-    public void showFailureEmail()
-    {
+    /**
+     * Display a failure message for invalid email.
+     */
+    public void showFailureEmail() {
         JOptionPane.showMessageDialog(null, "Login failed because email is invalid", "alert", JOptionPane.ERROR_MESSAGE);
-
     }
-    public void showFailurePassword()
-    {
-        JOptionPane.showMessageDialog(null, "Login failed because password is too short (<3) or too long(>8)", "alert", JOptionPane.ERROR_MESSAGE);
 
+    /**
+     * Display a failure message for invalid password length.
+     */
+    public void showFailurePassword() {
+        JOptionPane.showMessageDialog(null, "Login failed because password is too short (<3) or too long(>10)", "alert", JOptionPane.ERROR_MESSAGE);
     }
-    public void showSuccessLogin()
-    {
-        JOptionPane.showMessageDialog(null, "Login successful! welcome!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 
+    /**
+     * Display a success message for a successful login.
+     */
+    public void showSuccessLogin() {
+        JOptionPane.showMessageDialog(null, "Login successful! Welcome!", "Success!", JOptionPane.INFORMATION_MESSAGE);
     }
 }

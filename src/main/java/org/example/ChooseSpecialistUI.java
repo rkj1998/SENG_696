@@ -7,9 +7,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-
-
-public class ChooseSpecialistUI extends UI implements ActionListener  {
+/**
+ * The ChooseSpecialistUI class represents the user interface for choosing a healthcare specialist.
+ */
+public class ChooseSpecialistUI extends UI implements ActionListener {
     JLabel descriptionTextField = new JLabel("Available times for the selected specialist:");
     JTextField specialistNumTextField = new JTextField("         ");
     JPanel panel = new JPanel();
@@ -21,6 +22,11 @@ public class ChooseSpecialistUI extends UI implements ActionListener  {
     JCheckBox[][] checkboxes;
     ArrayList<ArrayList<String>> specialists;
 
+    /**
+     * Private constructor to enforce singleton pattern.
+     *
+     * @param frameTitle Title of the frame.
+     */
     private ChooseSpecialistUI(String frameTitle) {
         super(frameTitle);
         panel.setPreferredSize(new Dimension(500, 500));
@@ -35,25 +41,32 @@ public class ChooseSpecialistUI extends UI implements ActionListener  {
         frame.add(panel);
     }
 
-    public static ChooseSpecialistUI createUI()
-    {
-        if (singleton == null)
-        {
+    /**
+     * Create or retrieve the singleton instance of ChooseSpecialistUI.
+     *
+     * @return The singleton instance of ChooseSpecialistUI.
+     */
+    public static ChooseSpecialistUI createUI() {
+        if (singleton == null) {
             singleton = new ChooseSpecialistUI("Specialist");
-
         }
         return singleton;
-
     }
-    public void tableHandler(ArrayList<ArrayList<String>> specialist)
-    {
+
+    /**
+     * Handle the display of specialist information in a table.
+     *
+     * @param specialist The list of specialists to be displayed.
+     */
+    public void tableHandler(ArrayList<ArrayList<String>> specialist) {
         this.specialists = specialist;
         System.out.println(specialist);
-        //parse input to an array list of strings and show it in chooseSpecialistUI
+
+        // Parse input to an array list of strings and show it in ChooseSpecialistUI
         String[][] specialistsList = new String[specialists.size()][3];
         int specialistCounter = 0;
-        for (int i=0; i< specialists.size();i++)
-        {
+
+        for (int i = 0; i < specialists.size(); i++) {
             String[] tempArray = new String[4];
             tempArray[0] = Integer.toString(i);
             String name = specialists.get(i).get(0);
@@ -64,7 +77,8 @@ public class ChooseSpecialistUI extends UI implements ActionListener  {
             specialistsList[specialistCounter] = tempArray;
             specialistCounter += 1;
         }
-        String[] columnNames = { "ID", "Specialist Name", "Specialization"};
+
+        String[] columnNames = {"ID", "Specialist Name", "Specialization"};
         DefaultTableModel model = new DefaultTableModel(specialistsList, columnNames);
 
         this.appointmentsTable = new JTable(model);
@@ -76,39 +90,39 @@ public class ChooseSpecialistUI extends UI implements ActionListener  {
         frame.pack();
     }
 
-
+    /**
+     * Handle button click events.
+     *
+     * @param e The ActionEvent.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        if (e.getSource() == this.submitButton)
-        {
+        if (e.getSource() == this.submitButton) {
+            // Process the selection and request availability
             String numberString = specialistNumTextField.getText();
-            numberString = numberString.replaceAll("\\s+","");
+            numberString = numberString.replaceAll("\\s+", "");
             int number = Integer.parseInt(numberString);
-            if (number < 0 || number >= specialists.size())
-            {
+
+            if (number < 0 || number >= specialists.size()) {
                 showFailureNoOptions();
                 return;
             }
+
             PortalGUI.returnSingleton().requestAvailability(specialists.get(number).get(2));
+        }
 
-
-            }
-        if (e.getSource() == this.goBackHome)
-        {
+        if (e.getSource() == this.goBackHome) {
+            // Return to the home screen
             this.disposeFrame();
             HomeUI homeUIInstance = HomeUI.createUI();
             homeUIInstance.show();
-
         }
-
     }
 
-    public void showFailureNoOptions()
-    {
+    /**
+     * Display a failure message for an invalid selection.
+     */
+    public void showFailureNoOptions() {
         JOptionPane.showMessageDialog(null, "Invalid option", "alert", JOptionPane.ERROR_MESSAGE);
-
     }
-
-
 }

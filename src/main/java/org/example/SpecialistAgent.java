@@ -8,16 +8,18 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Hashtable;
-import java.util.Set;
 
-public class SpecialistAgent extends Agent{
-    Hashtable <String, Specialist> specialists;
+/**
+ * The SpecialistAgent class represents an agent responsible for managing specialist-related tasks.
+ */
+public class SpecialistAgent extends Agent {
+    Hashtable<String, Specialist> specialists;
 
-
+    /**
+     * Initializes the SpecialistAgent.
+     */
     protected void setup() {
-
         // Register specialist service so portal agent can search and find
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName(getAID());
@@ -27,24 +29,22 @@ public class SpecialistAgent extends Agent{
         dfd.addServices(sd);
         try {
             DFService.register(this, dfd);
-        }
-        catch (FIPAException fe) {
+        } catch (FIPAException fe) {
             fe.printStackTrace();
         }
 
-        // fill the specialists list with some hard-coded data
+        // Fill the specialists list with some hard-coded data
         specialists = Utils.generateSpecialists();
 
         addBehaviour(new CyclicBehaviour() {
             public void action() {
-
                 ACLMessage msg;
                 msg = myAgent.receive();
                 if (msg != null) {
                     String content = "";
-                    switch (msg.getPerformative()){
+                    switch (msg.getPerformative()) {
                         case Utils.SPECIALISTS_LISTS_REQUEST:
-                            System.out.println("SPECIALIST: specialists' list request received");
+                            System.out.println("SPECIALIST: Specialists' list request received");
                             String requestedSpecialization = msg.getContent();
 
                             ACLMessage replySpecialistsList = msg.createReply();
@@ -66,11 +66,9 @@ public class SpecialistAgent extends Agent{
                             send(replySpecialistsList);
                             break;
 
-
-
                         case Utils.AVAILABILITY_REQUEST:
-                            System.out.println("SPECIALIST: chosen specialist's availability request received");
-                            //get a message from the portal and parse the message and iterate over their times
+                            System.out.println("SPECIALIST: Chosen specialist's availability request received");
+                            // Get a message from the portal and parse the message and iterate over their times
                             String[] payloadLst = msg.getContent().split(Utils.DELIMITER);
                             String selectedSpecialistEmail = payloadLst[0];
                             Specialist selectedSpecialist = specialists.get(selectedSpecialistEmail);
@@ -79,14 +77,13 @@ public class SpecialistAgent extends Agent{
                             replyAvailability.setPerformative(Utils.AVAILABILITY_RESPONSE);
                             if (selectedSpecialist != null) {
                                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                                for (int i = 0; i < selectedSpecialist.getSchedule().size(); i++){
+                                for (int i = 0; i < selectedSpecialist.getSchedule().size(); i++) {
                                     if (!selectedSpecialist.getSchedule().get(i).getReserved()) {
                                         content = content.concat(selectedSpecialist.getSchedule().get(i).getStartingDateTime().format(formatter));
                                         content = content.concat(Utils.DELIMITER);
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 content = Utils.MESSAGE_FAILURE;
                             }
 
@@ -99,8 +96,5 @@ public class SpecialistAgent extends Agent{
                 }
             }
         });
-
     }
-
 }
-

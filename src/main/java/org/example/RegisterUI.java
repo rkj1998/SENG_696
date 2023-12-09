@@ -7,6 +7,9 @@ import java.awt.event.ActionListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The RegisterUI class represents the user interface for user registration.
+ */
 public class RegisterUI extends UI implements ActionListener {
     private JTextField emailTextField = new JTextField(20);
     private JPasswordField passwordField = new JPasswordField(20);
@@ -16,6 +19,11 @@ public class RegisterUI extends UI implements ActionListener {
 
     private static RegisterUI singleton = null;
 
+    /**
+     * Private constructor to create a RegisterUI instance.
+     *
+     * @param frameTitle The title of the frame.
+     */
     private RegisterUI(String frameTitle) {
         super(frameTitle);
 
@@ -60,12 +68,24 @@ public class RegisterUI extends UI implements ActionListener {
         frame.setLocationRelativeTo(null);
     }
 
+    /**
+     * Creates and returns a JLabel with the specified text.
+     *
+     * @param text The text for the label.
+     * @return The JLabel with the specified text.
+     */
     private JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
         label.setHorizontalAlignment(SwingConstants.LEFT);
         label.setPreferredSize(new Dimension(80, 20));
         return label;
     }
+
+    /**
+     * Handles the action performed event, triggered when the submit button is clicked.
+     *
+     * @param e The ActionEvent object.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == submitButton) {
@@ -106,23 +126,39 @@ public class RegisterUI extends UI implements ActionListener {
         }
     }
 
-
+    /**
+     * Displays a failure message for an invalid name.
+     */
     public void showFailureName() {
         JOptionPane.showMessageDialog(null, "Registration failed because name is invalid", "Alert", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Displays a failure message for an invalid email.
+     */
     public void showFailureEmail() {
         JOptionPane.showMessageDialog(null, "Registration failed because email is invalid", "Alert", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Displays a failure message for an invalid password.
+     */
     public void showFailurePassword() {
         JOptionPane.showMessageDialog(null, "Registration failed because password is invalid", "Alert", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Displays a failure message for an invalid phone number.
+     */
     public void showFailurePhone() {
         JOptionPane.showMessageDialog(null, "Registration failed because phone number is invalid", "Alert", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Creates a singleton instance of RegisterUI.
+     *
+     * @return The singleton instance of RegisterUI.
+     */
     public static RegisterUI createUI() {
         if (singleton == null) {
             singleton = new RegisterUI("Register");
@@ -130,15 +166,25 @@ public class RegisterUI extends UI implements ActionListener {
         return singleton;
     }
 
+    /**
+     * Displays a failure message for a general registration failure.
+     */
     public void showFailureMessage() {
         JOptionPane.showMessageDialog(null, "Registration failed", "Alert", JOptionPane.ERROR_MESSAGE);
     }
 
-    // Missing method added
+    /**
+     * Displays a success message for a successful registration.
+     */
     public void showSuccessRegister() {
         JOptionPane.showMessageDialog(null, "Registration successful! Please log in.", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Main method to launch the RegisterUI.
+     *
+     * @param args Command line arguments (not used).
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             RegisterUI registerUI = RegisterUI.createUI();
