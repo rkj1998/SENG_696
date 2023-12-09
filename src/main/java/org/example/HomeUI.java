@@ -17,7 +17,6 @@ public class HomeUI extends UI implements ActionListener  {
     private HomeUI(String frameTitle) {
         super(frameTitle);
         panel.setPreferredSize(new Dimension(250, 250));
-        panel.add(pastAPPButton);
         pastAPPButton.addActionListener(this);
 
         // Add the specialization dropdown

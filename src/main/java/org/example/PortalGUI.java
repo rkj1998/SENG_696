@@ -62,7 +62,6 @@ public class PortalGUI {
     public void requestAvailability(String specialistEmail)
     {
         portalAgentInstance.availabilityRequest(specialistEmail);
-        portalAgentInstance.availabilityRequest(specialistEmail);
     }
     public void requestRegister(String name,String email,String phone,String password)
     {
@@ -78,7 +77,6 @@ public class PortalGUI {
     }
     public void requestPastAppointments(String name)
     {
-
         //TODO: call the request function (not implemented yet.)
     }
     public void requestLoginUser(String email, String password)
