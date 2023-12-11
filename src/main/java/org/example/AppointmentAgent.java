@@ -47,14 +47,12 @@ public class AppointmentAgent extends Agent {
                 msg = myAgent.receive();
 
                 if (msg != null) {
-                    String[] payloadLst = msg.getContent().split(Utils.DELIMITER);
 
                     switch (msg.getPerformative()) {
                         case Utils.CREATE_APPOINTMENT_REQUEST:
                             ACLMessage reply = msg.createReply();
                             reply.setPerformative(Utils.CREATE_APPOINTMENT_RESPONSE);
                             String content = "";
-
                             String[] contentLst = msg.getContent().split(Utils.DELIMITER);
                             String dateTimeStr = contentLst[0];
                             String patientEmail = contentLst[1];
@@ -65,7 +63,8 @@ public class AppointmentAgent extends Agent {
 
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                             LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, formatter);
-
+                            System.out.println("HERE:");
+                            System.out.println(appointments);
                             // Check if the appointment already exists
                             boolean alreadyExists = false;
                             for (Appointment appointment : appointments) {
@@ -84,11 +83,13 @@ public class AppointmentAgent extends Agent {
                                 Appointment newAppointment = new Appointment(newAppointmentID, patientEmail,
                                         specialistEmail, dateTime, Utils.HOURLY_WAGE, Boolean.FALSE);
                                 appointments.add(newAppointment);
+                                Utils.savedAppointments.put(specialistEmail,dateTimeStr);
                                 content = Utils.MESSAGE_SUCCESS;
                                 content = content.concat(Utils.DELIMITER);
                                 content = content.concat(newAppointmentID.toString());
                                 content = content.concat(Utils.DELIMITER);
                                 content = content.concat(Utils.HOURLY_WAGE.toString());
+
                             }
 
                             reply.setContent(content);

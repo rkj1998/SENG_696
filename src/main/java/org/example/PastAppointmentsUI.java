@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
  * The PastAppointmentsUI class represents the user interface for viewing past appointments in the healthcare appointment system.
  */
 public class PastAppointmentsUI extends UI implements ActionListener {
-    JTextField descriptionTextField = new JTextField(20);
     JPanel panel = new JPanel();
     JList<String> appointmentData;
     JButton goBackHome = new JButton("Home");
@@ -23,33 +22,22 @@ public class PastAppointmentsUI extends UI implements ActionListener {
     private PastAppointmentsUI(String frameTitle) {
         super(frameTitle);
         panel.setPreferredSize(new Dimension(250, 250));
-        descriptionTextField.setPreferredSize(new Dimension(250, 40));
-        descriptionTextField.setText("Click on the specialist list to see the list of available specialists and make an appointment. " +
-                "You can see the history of your past appointments by pressing the past appointments button.");
-        panel.setLayout(new FlowLayout());
-        panel.add(descriptionTextField);
+                panel.setLayout(new FlowLayout());
+
         frame.setLayout(new FlowLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(500, 600));
         goBackHome.addActionListener(this);
+        frame.add(goBackHome);
         frame.add(panel);
     }
 
-    /**
-     * Dummy implementation for the show method.
-     */
-    @Override
-    public void show() {
-        // Dummy implementation
-    }
 
-    /**
-     * Display the frame with specified data.
-     *
-     * @param data The data to be displayed.
-     */
     public void show(String[] data) {
-        frame.setVisible(true);
+        appointmentDataHandler(data);  // Handle the appointment data
+        frame.pack();  // Pack the frame
+        frame.setLocationRelativeTo(null);  // Center the frame on the screen
+        frame.setVisible(true);  // Set the frame visibility to true
     }
 
     /**

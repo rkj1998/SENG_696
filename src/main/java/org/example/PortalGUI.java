@@ -1,6 +1,9 @@
 package org.example;
+import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Hashtable;
 
 /**
  * The PortalGUI class represents the user interface for the healthcare appointment system.
@@ -12,7 +15,6 @@ public class PortalGUI {
     String specialistEmail;
     String patientName;
     Integer appID;
-
     private PortalGUI(PortalAgent portalAgentInstance) {
         this.portalAgentInstance = portalAgentInstance;
     }
@@ -51,6 +53,7 @@ public class PortalGUI {
      * Displays the home UI.
      */
     public void showHome() {
+        System.out.println(Utils.savedAppointments);
         HomeUI home = HomeUI.createUI();
         home.setName(this.patientName);
         home.show();
@@ -108,14 +111,61 @@ public class PortalGUI {
         portalAgentInstance.createAppointmentRequest(appDateTime, this.patientEmail, this.specialistEmail);
     }
 
-    /**
-     * Requests the user's past appointments (Not implemented yet).
-     *
-     * @param name User's name.
-     */
-    public void requestPastAppointments(String name) {
-        // TODO: Implement this function
+
+    public void requestPastAppointments() {
+        // Assuming Utils.savedAppointments is the Hashtable containing saved appointments
+        Hashtable<String, String> savedAppointments = Utils.savedAppointments;
+
+        if (!savedAppointments.isEmpty()) {
+            // Create an array to hold the data for PastAppointmentsUI
+            String[] pastAppointmentsData = new String[savedAppointments.size()];
+
+            int index = 0;
+
+            for (String name : savedAppointments.keySet()) {
+                // Create a formatted string for each user's past appointments
+                String userData = "Specialist : " + extractNamesFromEmail(name) + " - Appointments: " + savedAppointments.get(name);
+                pastAppointmentsData[index] = userData;
+                index++;
+            }
+
+            // Create or retrieve the singleton instance of PastAppointmentsUI
+            PastAppointmentsUI pastAppointmentsUI = PastAppointmentsUI.createUI();
+            // Call the appointmentDataHandler method to display past appointments
+            pastAppointmentsUI.appointmentDataHandler(pastAppointmentsData);
+            // Show the PastAppointmentsUI frame
+            pastAppointmentsUI.show();
+        } else {
+            // Display a message if there are no past appointments
+            JOptionPane.showMessageDialog(null, "No past appointments available.", "Information", JOptionPane.INFORMATION_MESSAGE);
+
+            // Go back to the home screen
+            HomeUI homeUIInstance = HomeUI.createUI();
+            homeUIInstance.show();
+        }
     }
+
+
+
+    public static String extractNamesFromEmail(String email) {
+        // Check if the email is not null and contains a dot
+        String name = "";
+        for (int i=0;i<email.length();i++){
+            if(email.charAt(i)!='.'&&email.charAt(i)!='@'){
+                name+=email.charAt(i);
+            }
+            else if (email.charAt(i)=='.'){
+                name+=" ";
+            }
+            else{
+                break;
+            }
+        }
+
+        // Return null if the email format is not as expected
+        return name;
+    }
+
 
     /**
      * Requests user login.

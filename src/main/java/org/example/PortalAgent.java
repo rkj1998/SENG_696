@@ -227,6 +227,7 @@ public class PortalAgent extends Agent {
      *
      * @param specialistEmail Email of the specialist.
      */
+
     public void availabilityRequest(String specialistEmail) {
         addBehaviour(new OneShotBehaviour() {
             @Override
@@ -235,6 +236,9 @@ public class PortalAgent extends Agent {
 
                 System.out.println("PORTAL: Requesting to get availability of specialist "
                         + specialistEmail + " from " + specialistAgent.getLocalName());
+
+                // Set the specialistEmail in the PortalGUI singleton
+                PortalGUI.returnSingleton().specialistEmail = specialistEmail;
 
                 message.setContent(specialistEmail);
                 message.addReceiver(specialistAgent);
