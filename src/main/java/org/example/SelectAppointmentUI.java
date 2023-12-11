@@ -97,6 +97,7 @@ public class SelectAppointmentUI extends UI implements ActionListener {
         frame.pack();
     }
 
+
     /**
      * Handles the action performed event, triggered when buttons are clicked.
      *

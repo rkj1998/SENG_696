@@ -30,10 +30,10 @@ public class HomeUI extends UI implements ActionListener {
         // Add the specialization dropdown
         populateSpecializationDropdown(); // Populate the dropdown
         panel.add(specializationDropdown);
-
         // Add a button to trigger displaying specialists
         showSpecialistsButton.addActionListener(this);
         panel.add(showSpecialistsButton);
+        panel.add(pastAPPButton);
 
         panel.setLayout(new FlowLayout());
         panel.add(welcomeTextLabel);
@@ -79,7 +79,7 @@ public class HomeUI extends UI implements ActionListener {
             // Trigger action to request past appointment history
             this.disposeFrame();
             PortalGUI portal = PortalGUI.returnSingleton();
-            portal.requestPastAppointments("Temp name"); // TODO: change temp name to user name!
+            portal.requestPastAppointments();
         } else if (e.getSource() == showSpecialistsButton) {
             // Trigger action to request specialist list based on selected specialization from the dropdown
             String selectedSpecialization = (String) specializationDropdown.getSelectedItem();

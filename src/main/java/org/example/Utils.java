@@ -44,6 +44,13 @@ public class Utils {
     // Hourly wage for payment
     public final static Integer HOURLY_WAGE = 60; // In CAD for example
 
+    public static final String SPECIALIST_NAME = "specialistName";
+    public static final String SPECIALITY = "speciality";
+    public static final String DATE_OF_APPOINTMENT = "dateOfAppointment";
+
+    public static Hashtable<String, String> savedAppointments = new Hashtable<String, String>();
+
+
     /**
      * Generates a hashtable of specialists with hard-coded data.
      *
@@ -79,7 +86,6 @@ public class Utils {
             specialists.put(specialist.getEmail(), specialist);
         }
 
-        System.out.println("THESE ARE: " + specialists.size());
 
         return specialists;
     }
